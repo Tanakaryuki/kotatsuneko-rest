@@ -1,0 +1,8 @@
+services:
+  kotatsuneko-api:
+    container_name: kotatsuneko-api
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - 8080:8080
