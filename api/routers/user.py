@@ -15,3 +15,11 @@ def signup(request: user_schema.UserSignupRequest, db:client = Depends(get_db)):
         raise HTTPException(status.HTTP_400_BAD_REQUEST)
     user_crud.create_user(db=db, signup=request)
     return status.HTTP_201_CREATED
+
+@router.get("/users/username/exists", description="指定されたユーザー名が存在するかどうかを確認します。")
+def check_username(username: str, db:client = Depends(get_db)):
+    user = user_crud.read_user_by_username(db=db, username=username)
+    if user:
+        return user_schema.UserExistsResponse(exists=True)
+    else:
+        return user_schema.UserExistsResponse(exists=False)
