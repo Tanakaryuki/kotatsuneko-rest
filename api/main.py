@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 SERVICE_ACCOUNT = str(os.getenv("SERVICE_ACCOUNT"))
 
-from api.routers import user
+from api.routers import user,ranking
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,3 +26,4 @@ async def hello():
     return {"message": "Hello World"}
 
 app.include_router(user.router, prefix="/api", tags=["users"])
+app.include_router(ranking.router, prefix="/api", tags=["ranking"])
