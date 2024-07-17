@@ -1,18 +1,12 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from firebase_admin import credentials,initialize_app
-import os
-from dotenv import load_dotenv
-
-load_dotenv(verbose=True)
-SERVICE_ACCOUNT = str(os.getenv("SERVICE_ACCOUNT"))
+from firebase_admin import initialize_app
 
 from api.routers import user,ranking
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    cred = credentials.Certificate(SERVICE_ACCOUNT)
-    initialize_app(cred)
+    initialize_app()
     print("Initializing Firebase")
     try:
         yield
