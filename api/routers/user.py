@@ -16,7 +16,7 @@ def signup(request: user_schema.UserSignupRequest, db:client = Depends(get_db)):
     user_crud.create_user(db=db, signup=request)
     return status.HTTP_201_CREATED
 
-@router.get("/users/username/exists", description="指定されたユーザー名が存在するかどうかを確認します。")
+@router.get("/users/username/exists", description="指定されたユーザー名が存在するかどうかを確認します。",response_model=user_schema.UserExistsResponse)
 def check_username(username: str, db:client = Depends(get_db)):
     user = user_crud.read_user_by_username(db=db, username=username)
     if user:
