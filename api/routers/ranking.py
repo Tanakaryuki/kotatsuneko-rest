@@ -19,3 +19,8 @@ def create_event(request: ranking_schema.RankingRequest,current_user: str = Depe
         clear_time,update_at = ranking_crud.create_ranking(db=db, ranking=request, username=current_user)
         return ranking_schema.RankingResponse(clear_time=clear_time,update_at=update_at,is_new=True)
     return ranking_schema.RankingResponse(clear_time=ranking.get("clear_time"),update_at=ranking.get("update_at"),is_new=False)
+
+@router.get("/ranking", description="ランキングデータを取得するために使用されます。",response_model=ranking_schema.RankingListResponse)
+def read_event(limit: int = 10,current_user: str = Depends(get_current_user), db: client = Depends(get_db)):
+    ranking = ranking_crud.read_ranking(db=db,limit=limit)
+    return ranking_schema.RankingListResponse(ranking_list=ranking)

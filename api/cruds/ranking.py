@@ -16,3 +16,12 @@ def read_ranking_by_username(db: client, username: str) -> dict|None:
     if ranking_ref.exists:
         return ranking_ref
     return None
+
+def read_ranking(db: client, limit: int = 10) -> list:
+    ranking_list = []
+    ranking_ref = db.collection("Ranking").order_by("clear_time").limit(limit).stream()
+    for doc in ranking_ref:
+        ranking_dict = doc.to_dict()
+        ranking_dict["username"] = doc.id
+        ranking_list.append(ranking_dict)
+    return ranking_list
