@@ -11,7 +11,6 @@ router = APIRouter()
 @router.post("/ranking", description="ランキングデータを更新するために使用されます。",response_model=ranking_schema.RankingResponse)
 def create_event(request: ranking_schema.RankingRequest,current_user: str = Depends(get_current_user), db: client = Depends(get_db)):
     ranking = ranking_crud.read_ranking_by_username(db=db,username=current_user)
-    print(ranking)
     if ranking is None:
         clear_time,update_at = ranking_crud.create_ranking(db=db, ranking=request, username=current_user)
         return ranking_schema.RankingResponse(clear_time=clear_time,update_at=update_at,is_new=True)
@@ -29,7 +28,6 @@ def read_event(limit: int = 10, db: client = Depends(get_db)):
 def check_record(clear_time: int = 0,limit: int = 10, current_user: str = Depends(get_current_user), db: client = Depends(get_db)):
     ranking = ranking_crud.read_ranking_by_username(db=db,username=current_user)
     ranking_list = ranking_crud.read_ranking(db=db,limit=limit)
-    print(ranking_list)
     if ranking is None:
         if len(ranking_list) >= limit:
             if ranking_list[limit - 1].get("clear_time") > clear_time:
@@ -38,7 +36,6 @@ def check_record(clear_time: int = 0,limit: int = 10, current_user: str = Depend
                 return ranking_schema.RankingRecordResponse(is_new=True,can_record=False,ranking_list=ranking_list)
         else:
             return ranking_schema.RankingRecordResponse(is_new=True,can_record=True,ranking_list=ranking_list)
-    print(ranking.get("clear_time"))
     if ranking.get("clear_time") > clear_time:
         if len(ranking_list) >= limit:
             if ranking_list[limit - 1].get("clear_time") > clear_time:
