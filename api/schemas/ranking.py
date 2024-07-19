@@ -4,11 +4,13 @@ from datetime import datetime
 
 class RankingRequest(BaseModel):
     clear_time:  int = Field(..., example=5)
+    limit: int = Field(..., example=10)
     
 class RankingResponse(BaseModel):
     is_new: bool = Field(..., example=True)
     clear_time:  int = Field(..., example=5)
     update_at: datetime = Field(..., example="2021-01-01T00:00:00")
+    ranking_list: list[dict] = Field(..., example=[{"username":"admin","clear_time":5,"update_at":"2021-01-01T00:00:00"}])
     
 class RankingDate(BaseModel):
     username: str = Field(..., example="admin")
