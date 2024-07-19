@@ -18,4 +18,7 @@ class RankingDate(BaseModel):
 class RankingListResponse(BaseModel):
     ranking_list: list[RankingDate] = Field(..., example=[{"username":"admin","clear_time":5,"update_at":"2021-01-01T00:00:00"}])
     
-    
+class RankingRecordResponse(BaseModel):
+    is_new: bool = Field(..., example=True)
+    can_record: bool = Field(..., example=True)
+    ranking_list: list[RankingDate] = Field(..., example=[{"username":"admin","clear_time":5,"update_at":"2021-01-01T00:00:00"}]) 
