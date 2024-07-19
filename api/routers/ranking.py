@@ -14,13 +14,23 @@ def create_event(request: ranking_schema.RankingRequest,current_user: str = Depe
     if ranking is None:
         clear_time,update_at = ranking_crud.create_ranking(db=db, ranking=request, username=current_user)
         ranking_list = ranking_crud.read_ranking(db=db,limit=request.limit)
-        return ranking_schema.RankingResponse(clear_time=clear_time,update_at=update_at,is_new=True,ranking_list=ranking_list)
+        rank = -1
+        for i, entry in enumerate(ranking_list):
+            if entry['username'] == current_user:
+                rank = i + 1
+                break
+        return ranking_schema.RankingResponse(rank=rank,clear_time=clear_time,update_at=update_at,is_new=True,ranking_list=ranking_list)
     if ranking.get("clear_time") > request.clear_time:
         clear_time,update_at = ranking_crud.create_ranking(db=db, ranking=request, username=current_user)
         ranking_list = ranking_crud.read_ranking(db=db,limit=request.limit)
-        return ranking_schema.RankingResponse(clear_time=clear_time,update_at=update_at,is_new=True,ranking_list=ranking_list)
+        rank = -1
+        for i, entry in enumerate(ranking_list):
+            if entry['username'] == current_user:
+                rank = i + 1
+                break
+        return ranking_schema.RankingResponse(rank=rank,clear_time=clear_time,update_at=update_at,is_new=True,ranking_list=ranking_list)
     ranking_list = ranking_crud.read_ranking(db=db,limit=request.limit)
-    return ranking_schema.RankingResponse(clear_time=ranking.get("clear_time"),update_at=ranking.get("update_at"),is_new=False,ranking_list=ranking_list)
+    return ranking_schema.RankingResponse(rank=-1,clear_time=ranking.get("clear_time"),update_at=ranking.get("update_at"),is_new=False,ranking_list=ranking_list)
 
 @router.get("/ranking", description="ランキングデータを取得するために使用されます。",response_model=ranking_schema.RankingListResponse)
 def read_event(limit: int = 10, db: client = Depends(get_db)):

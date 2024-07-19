@@ -7,6 +7,7 @@ class RankingRequest(BaseModel):
     limit: int = Field(..., example=10)
     
 class RankingResponse(BaseModel):
+    rank: int = Field(..., example=1)
     is_new: bool = Field(..., example=True)
     clear_time:  int = Field(..., example=5)
     update_at: datetime = Field(..., example="2021-01-01T00:00:00")
