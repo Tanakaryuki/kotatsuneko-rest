@@ -1,9 +1,13 @@
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, Request
 from contextlib import asynccontextmanager
 from firebase_admin import initialize_app
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import user,ranking
+from api.routers import user, ranking
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,6 +19,17 @@ async def lifespan(app: FastAPI):
         print("Finalizing Firebase")
     
 app = FastAPI(lifespan=lifespan)
+
+app = FastAPI(lifespan=lifespan)
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    body = await request.body()
+    logger.info(f"Request: {request.method} {request.url} {body.decode('utf-8').replace('\n', '')}")
+    
+    response = await call_next(request)
+    
+    return response
 
 app.add_middleware(
     CORSMiddleware,
