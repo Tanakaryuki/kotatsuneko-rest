@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from firebase_admin import initialize_app
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.routers import user,ranking
 
@@ -14,6 +15,13 @@ async def lifespan(app: FastAPI):
         print("Finalizing Firebase")
     
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def hello():
