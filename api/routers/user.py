@@ -15,6 +15,7 @@ def signup(request: user_schema.UserSignupRequest, db:client = Depends(get_db)):
     user = user_crud.read_user_by_username(db=db, username=request.username)
     if user:
         raise HTTPException(status.HTTP_400_BAD_REQUEST)
+    user_crud.create_user(db=db, signup=request)
     access_token = create_access_token(data={"sub": request.username})
     return user_schema.Token(access_token=access_token, token_type="bearer")
 

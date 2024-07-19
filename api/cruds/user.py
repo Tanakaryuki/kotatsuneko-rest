@@ -14,7 +14,8 @@ def read_user_hashed_omajinai(db: client, username: str) -> str|None:
 
 def create_user(db: client, signup: user_schema.UserSignupRequest) -> None:
     signup_dict = signup.model_dump()
-    signup_dict["hashed_omajinai"] = CryptContext(["bcrypt"]).hash(signup.hashed_omajinai)
+    signup_dict["hashed_omajinai"] = CryptContext(["bcrypt"]).hash(signup.omajinai)
     signup_dict.pop("username")
+    signup_dict.pop("omajinai")
     user_ref = db.collection("Users").document(signup.username)
     user_ref.set(signup_dict)
