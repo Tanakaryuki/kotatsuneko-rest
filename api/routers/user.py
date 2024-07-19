@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordRequestForm
 from firebase_admin.firestore import client
 
@@ -20,7 +20,7 @@ def signup(request: user_schema.UserSignupRequest, db:client = Depends(get_db)):
     return user_schema.Token(access_token=access_token, token_type="bearer")
 
 @router.get("/users/username/exists", description="指定されたユーザー名が存在するかどうかを確認します。",response_model=user_schema.UserExistsResponse)
-def check_username(username: str, db:client = Depends(get_db)):
+def check_username(username: str = Query(..., min_length=1, max_length=50), db:client = Depends(get_db)):
     user = user_crud.read_user_by_username(db=db, username=username)
     if user:
         return user_schema.UserExistsResponse(exists=True)
