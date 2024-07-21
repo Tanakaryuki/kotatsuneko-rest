@@ -1,5 +1,7 @@
 import logging
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from firebase_admin import initialize_app
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,17 +14,23 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     initialize_app()
-    print("Initializing Firebase")
+    logger.info("Initializing Firebase")
     try:
         yield
     finally:
-        print("Finalizing Firebase")
-    
-app = FastAPI(lifespan=lifespan)
+        logger.info("Finalizing Firebase")
 
 app = FastAPI(lifespan=lifespan)
 
-@app.middleware("http")
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+    return JSONResponse(
+        status_code=400,
+        content={"detail": errors},
+    )
+
+@app.middleware("https")
 async def log_requests(request: Request, call_next):
     body = await request.body()
     logger.info(f"Request: {request.method} {request.url} {body.decode('utf-8').replace('\n', '')}")
