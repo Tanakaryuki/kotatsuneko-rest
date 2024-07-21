@@ -1,7 +1,6 @@
 import re
 
-# 正規表現パターン
-pattern = re.compile(r'^\.|\.{2}|__.*__')
+pattern = re.compile(r'^\.|\.{2}|__.*__|/')
 
 def contains_invalid_pattern(s: str) -> bool:
     return bool(pattern.search(s))
