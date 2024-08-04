@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
-from firebase_admin import initialize_app
+from firebase_admin import initialize_app,credentials
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routers import user, ranking
@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    initialize_app()
+    cred = credentials.Certificate("api/service_account.json")
+    initialize_app(cred)
     logger.info("Initializing Firebase")
     try:
         yield
