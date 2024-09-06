@@ -15,7 +15,6 @@ load_dotenv(verbose=True)
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 ALGORITHM = str(os.getenv("ALGORITHM"))
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/token")
